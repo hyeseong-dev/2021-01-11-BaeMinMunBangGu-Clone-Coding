@@ -30,7 +30,7 @@ CREATE TABLE `addresses` (
   PRIMARY KEY (`id`),
   KEY `addresses_user_id_d930d1dc_fk_users_id` (`user_id`),
   CONSTRAINT `addresses_user_id_d930d1dc_fk_users_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,6 +39,7 @@ CREATE TABLE `addresses` (
 
 LOCK TABLES `addresses` WRITE;
 /*!40000 ALTER TABLE `addresses` DISABLE KEYS */;
+INSERT INTO `addresses` VALUES (1,'서울 성북구','한동근',1),(2,'서울 성북구','한동근',1);
 /*!40000 ALTER TABLE `addresses` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -162,7 +163,7 @@ CREATE TABLE `django_migrations` (
   `name` varchar(255) NOT NULL,
   `applied` datetime(6) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -171,7 +172,7 @@ CREATE TABLE `django_migrations` (
 
 LOCK TABLES `django_migrations` WRITE;
 /*!40000 ALTER TABLE `django_migrations` DISABLE KEYS */;
-INSERT INTO `django_migrations` VALUES (1,'contenttypes','0001_initial','2021-01-20 11:50:15.561854'),(2,'contenttypes','0002_remove_content_type_name','2021-01-20 11:50:15.715302'),(3,'product','0001_initial','2021-01-20 11:50:16.377278'),(4,'user','0001_initial','2021-01-20 11:50:16.825800'),(5,'order','0001_initial','2021-01-20 11:50:17.150933'),(6,'order','0002_auto_20210120_2050','2021-01-20 11:50:17.918843'),(7,'product','0002_auto_20210120_2050','2021-01-20 11:50:19.334946'),(8,'sessions','0001_initial','2021-01-20 11:50:19.390959');
+INSERT INTO `django_migrations` VALUES (1,'contenttypes','0001_initial','2021-01-20 11:50:15.561854'),(2,'contenttypes','0002_remove_content_type_name','2021-01-20 11:50:15.715302'),(3,'product','0001_initial','2021-01-20 11:50:16.377278'),(4,'user','0001_initial','2021-01-20 11:50:16.825800'),(5,'order','0001_initial','2021-01-20 11:50:17.150933'),(6,'order','0002_auto_20210120_2050','2021-01-20 11:50:17.918843'),(7,'product','0002_auto_20210120_2050','2021-01-20 11:50:19.334946'),(8,'sessions','0001_initial','2021-01-20 11:50:19.390959'),(9,'order','0003_auto_20210121_0939','2021-01-21 00:39:53.519656'),(10,'order','0004_order_order_number','2021-01-21 01:05:35.099395'),(11,'order','0005_remove_order_order_number','2021-01-21 01:09:13.084359'),(12,'order','0006_auto_20210121_1026','2021-01-21 01:26:22.055071');
 /*!40000 ALTER TABLE `django_migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -261,21 +262,14 @@ DROP TABLE IF EXISTS `order_items`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `order_items` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `total_price` decimal(18,2) NOT NULL,
   `quantity` int NOT NULL,
-  `address_id` int NOT NULL,
   `order_id` int DEFAULT NULL,
   `product_id` int DEFAULT NULL,
-  `thumbnail_id` int NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `order_items_address_id_05b7cfe1_fk_addresses_id` (`address_id`),
   KEY `order_items_order_id_412ad78b_fk_orders_id` (`order_id`),
   KEY `order_items_product_id_dd557d5a_fk_products_id` (`product_id`),
-  KEY `order_items_thumbnail_id_0ff196c7_fk_products_id` (`thumbnail_id`),
-  CONSTRAINT `order_items_address_id_05b7cfe1_fk_addresses_id` FOREIGN KEY (`address_id`) REFERENCES `addresses` (`id`),
   CONSTRAINT `order_items_order_id_412ad78b_fk_orders_id` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`),
-  CONSTRAINT `order_items_product_id_dd557d5a_fk_products_id` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`),
-  CONSTRAINT `order_items_thumbnail_id_0ff196c7_fk_products_id` FOREIGN KEY (`thumbnail_id`) REFERENCES `products` (`id`)
+  CONSTRAINT `order_items_product_id_dd557d5a_fk_products_id` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -299,7 +293,7 @@ CREATE TABLE `order_status` (
   `id` int NOT NULL AUTO_INCREMENT,
   `status` varchar(45) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -308,6 +302,7 @@ CREATE TABLE `order_status` (
 
 LOCK TABLES `order_status` WRITE;
 /*!40000 ALTER TABLE `order_status` DISABLE KEYS */;
+INSERT INTO `order_status` VALUES (1,'입금대기'),(2,'결제완료'),(3,'상품준비중'),(4,'배송중'),(5,'배송완료'),(6,'구매확정');
 /*!40000 ALTER TABLE `order_status` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -321,12 +316,10 @@ DROP TABLE IF EXISTS `orders`;
 CREATE TABLE `orders` (
   `id` int NOT NULL AUTO_INCREMENT,
   `create_at` date NOT NULL,
-  `order_status_id` int NOT NULL,
+  `order_status` tinyint(1) NOT NULL,
   `user_id` int NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `orders_order_status_id_05e726df_fk_order_status_id` (`order_status_id`),
   KEY `orders_user_id_7e2523fb_fk_users_id` (`user_id`),
-  CONSTRAINT `orders_order_status_id_05e726df_fk_order_status_id` FOREIGN KEY (`order_status_id`) REFERENCES `order_status` (`id`),
   CONSTRAINT `orders_user_id_7e2523fb_fk_users_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -627,4 +620,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-01-20 21:00:55
+-- Dump completed on 2021-01-21 14:49:15
