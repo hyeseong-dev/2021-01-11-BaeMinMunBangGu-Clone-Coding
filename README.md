@@ -46,7 +46,7 @@ https://youtu.be/AaUEtWd0aq4
 
 ### 모델링 구축
 
-<img width="816" alt="모델링 최종" src="https://user-images.githubusercontent.com/57933835/111529254-46ac9080-87a5-11eb-9b78-787badb7d66e.png)">
+<img width="816" alt="모델링 최종" src="https://user-images.githubusercontent.com/57933835/111529254-46ac9080-87a5-11eb-9b78-787badb7d66e.png">
 
 
 ### **회원가입 & 로그인 (SignUp & SignIn)**
