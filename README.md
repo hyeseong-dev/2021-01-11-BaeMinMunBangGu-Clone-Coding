@@ -1,4 +1,3 @@
-![baemin_20210318_34_13](https://user-images.githubusercontent.com/57933835/111528473-8aeb6100-87a4-11eb-9ad2-e98098a1ce1a.png)
 # 배민문방구 클론 코딩 API 🚄
 
 - 진행기간: 2021년 01월 11일(월) ~ 2021년 01월 22일(금) [12주간]
@@ -47,7 +46,8 @@ https://youtu.be/AaUEtWd0aq4
 
 ### 모델링 구축
 
-<img width="816" alt="모델링 최종" src="ttps://images.velog.io/images/hyeseong-dev/post/6291b043-39ed-4036-b603-ab9865b4f34f/image.png)">
+<img width="816" alt="모델링 최종" src="https://user-images.githubusercontent.com/57933835/111529254-46ac9080-87a5-11eb-9b78-787badb7d66e.png)">
+
 
 ### **회원가입 & 로그인 (SignUp & SignIn)**
 
@@ -84,7 +84,7 @@ https://youtu.be/AaUEtWd0aq4
 
 ## 🧑‍💻 Backend
 
-- 이혜성
+- [이혜성](https://velog.io/@hyeseong-dev/Wecode1%EC%B0%A8-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%ED%9A%8C%EA%B3%A0%EB%A1%9D)
 - 정지원
 - 
 
