@@ -1,6 +1,6 @@
-# Team CrazyTrain🚄
+# 배민문방구 클론 코딩 API 🚄
 
-- 진행기간: 2020년 12월 14일 ~ 2020년 12월 24일
+- 진행기간: 2021년 01월 11일(월) ~ 2021년 01월 22일(금) [12주간]
 <img width="933" alt="Screen Shot 2020-12-24 at 5 49 39 PM" src="https://user-images.githubusercontent.com/71719160/103166192-f509ff00-4862-11eb-8038-688e78bbf4f8.png">
 
 ## **🏠프로젝트 소개**
@@ -18,11 +18,11 @@
 
 ### 👍 **FrontEnd**
 
-- 김성훈, 김영재, 하태현
+- 김병진, 김동하
 
 ### 👍 **BackEnd**
 
-- 김민철(PM), 이수한, 석여주
+- 이혜성
 
 ## **🌹기술 스택🌹**
 
@@ -36,57 +36,17 @@
 
 ### **협업 도구**
 
-- Slack / Git + GitHub / [Trello](https://trello.com/b/m2hECHg6/%EC%98%A4%EB%8A%98%EC%9D%98-%EC%A7%91)를 이용, 일정관리 및 작업 현황 확인 / Postman (API 관리)
+- Slack / Git + GitHub / [Trello](https://media.vlpt.us/images/hyeseong-dev/post/6cecf060-6881-4dd1-8d16-cc6d4c7b5f9a/image.png)를 이용, 일정관리 및 작업 현황 확인 / Postman (API 관리)
 
 ---
 
-# ⭐️ **구현한 기능**
-
-## 🌱 Frontend
-
-### **회원가입 & 로그인 (SignUp & SignIn)**
-
-- 회원 가입시 유효성 검사
-- 약관 동의 체크 박스
-
-### 네비게이션 바
-
-- 커뮤니티 / 스토어 서브메뉴 구현
-- 로그인시 회원정보가 표기되도록 로직 구현
-
-### 커뮤니티 페이지
-
-- 그리드 디스플레이를 이용, 카드 리스트 구현
-- 각각의 카드를 컴포넌트 화
-- 쿼리스트링을 이용한 필터 기능 구현
-- 상세 페이지 상품 태그 기능 구현
-- 상세 페이지 댓글 기능 구현
-
-### 스토어 페이지
-
-- 사이드 카테고리
-- 슬라이드를 이용한 배너 구현
-- 전체상품 리스트에 infinite scroll 적용
-- 각각의 카드를 컴포넌트 화
-- 필터 버튼
-    - 각각의 필터 버튼을 컴포넌트화 하여 타입별 다른 인풋을 출력하도록 디자인
-    - 필터 버튼 클릭시 태그 추가
-- 가격 필터
-    - 필터 선택시 가격 박스에 반영
-- 상세페이지
-    - 장바구니 상품 추가 기능
-
-### **장바구니**
-
-- 상품 정보 컴포넌트화
-- 선택한 상품만 합계 금액에 반영
-- 수량 옵션 변경시 Database에 실시간 반영
+# ⭐️ **구현 기능**
 
 ## 🌱 Backend
 
 ### 모델링 구축
 
-<img width="816" alt="모델링 최종" src="https://user-images.githubusercontent.com/71719160/103166208-24b90700-4863-11eb-925c-1bcf72c19ba4.png">
+<img width="816" alt="모델링 최종" src="ttps://images.velog.io/images/hyeseong-dev/post/6291b043-39ed-4036-b603-ab9865b4f34f/image.png)">
 
 ### **회원가입 & 로그인 (SignUp & SignIn)**
 
