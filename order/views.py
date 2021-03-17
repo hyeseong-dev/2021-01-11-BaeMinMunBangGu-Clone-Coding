@@ -20,13 +20,13 @@ class OrderItemView(View):
             order_items = request.user.order_item.prefetch_related('product')
 
         order_item_list = [{
-            'category'      : single_item.product.category.name,
-            'product_name'  : single_item.product.name,
-            'image'         : single_item.product.main_image,
-            'price'         : single_item.product.price ,
+            'category'      : i.product.category.name,
+            'product_name'  : i.product.name,
+            'image'         : i.product.main_image,
+            'price'         : i.product.price ,
             'quantity'      : quantity,
-            'create_at'     : single_item.product.creat_at,
-        } for single_item in order_item_list ]
+            'create_at'     : i.product.creat_at,
+        } for i in order_item_list ]
 
         return JsonResponse({'MESSAGE':'ORDER ITEM LIST': order_item_list}, status=200)
 
@@ -78,11 +78,3 @@ class OrderItemView(View):
                     return JsonResponse({"MESSAGE" :"ORDER ITEM DOES NOT EXISTS"}, status = 400)   
                 except KeyError:
                     return JsonResponse({"MESSAGE" : 'KEY_ERROR'}, status = 400)
-
-
-     #I. 오더가 존재(O)             GET, PUT, DELETE
-            #  1) 오더가 존재하고 이미 상품이 존재하는 카트 - 기존 OrderItem 업데이트(수량!) PUT
-            #  2) 오더가 존재하고 상품이 새로 추가되는 경우 - OrderItem 생성(새로운 상품)      
-            
-            # II.  오더가 존재(X)   POST
-            #  1) 오더를 생성 -> OrderItem 생성.
