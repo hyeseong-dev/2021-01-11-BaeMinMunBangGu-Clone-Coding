@@ -2,7 +2,7 @@ from django.db import models
 
 class Order(models.Model):
     user            = models.ForeignKey('user.user', on_delete=models.CASCADE)
-    status          = models.ForeignKey('order.status', on_delete=models.CASCADE)
+    status          = models.ForeignKey('orderstatus', on_delete=models.CASCADE)
     address         = models.ForeignKey('user.address', on_delete=models.CASCADE, null=True)
     product         = models.ManyToManyField('product.product', through='cart', related_name='shopping_cart')
     create_at       = models.DateTimeField(auto_now_add=True)

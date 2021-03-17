@@ -11,7 +11,9 @@ from my_settings import ALGORITHM, SECRET_KEY
 from decorators  import utils
 
 def check_duplication(account, email,phone):
-    return User.objects.filter(Q(account=account) | Q(email=email) | Q(phone=phone)).exists()
+    return User.objects.filter(Q(account=account) | 
+                               Q(email=email) | 
+                               Q(phone=phone)).exists()
 
 def account_validation(account):
     REGEX_ACCOUNT = '(?i)^(?=.*[a-z])[a-z0-9]{4,20}$'
@@ -54,7 +56,7 @@ def login_required(func):
         try:
             access_token = request.headers['Authorization']
             payload      = jwt.decode(access_token, SECRET_KEY, algorithms=ALGORITHM) 
-            user         = User.object.get(id=payload['user_id'])
+            user         = User.object.get(id=payload['user_pk'])
             request.user = user
         except jwt.DecodeError:
             return JsonResponse({'MESSAGE':'JWT_DECODE_ERROR'}, status=400)

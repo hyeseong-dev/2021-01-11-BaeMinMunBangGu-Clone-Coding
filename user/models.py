@@ -13,7 +13,7 @@ class User(models.Model):
     email_spam      = models.BooleanField(default=False)
     grade           = models.ForeignKey('grade', on_delete=models.CASCADE)
     coupon          = models.ManyToManyField('coupon', through='usercoupon')
-    product         = models.ManyToManyField('product.product', through='recentlyview', related_name='recently_view')
+    product         = models.ManyToManyField('product.product', through='recentview', related_name='recently_view')
     create_at       = models.DateTimeField(auto_now_add=True)
     update_at       = models.DateTimeField(auto_now=True)
     total_price     = models.DecimalField(max_digits=18, decimal_places=2, default=0)
@@ -26,7 +26,22 @@ class User(models.Model):
 
 
 class Grade(models.Model):
-    name = models.CharField(max_length=20)
+
+    GRADE_NORMAL = '일반회원'
+    GRADE_VIP    = 'VIP회원'
+    GRADE_VVIP   = 'VVIP회원'
+    GRADE_VVVIP  = 'VVVIP회원'
+    GRADE_STAFF  = '관리자'
+
+    GRADE_CHOICES = (
+        (GRADE_NORMAL, '일반회원'),
+        (GRADE_VIP, 'VIP회원'),
+        (GRADE_VVIP, 'VVIP회원'),
+        (GRADE_VVVIP, 'VVVIP회원'),
+        (GRADE_STAFF, '관리자'),
+    )
+
+    name = models.CharField(max_length=20, choices=GRADE_CHOICES, default=GRADE_NORMAL, blank=True)
 
     def __str__(self):
         return f'{self.name}'
@@ -52,7 +67,22 @@ class Point(models.Model):
 
 
 class Coupon(models.Model):
-    name        = models.CharField(max_length=30)
+
+    COUPON_NEW  = '회원가입쿠폰'
+    COUPON_1    = '1만원쿠폰'
+    COUPON_10   = '10만원쿠폰'
+    COUPON_100  = '100만원쿠폰'
+    COUPON_HALF = '평생반값쿠폰'
+
+    COUPON_CHOICES = (
+        (COUPON_NEW, '회원가입쿠폰'),
+        (COUPON_1,   '1만원쿠폰'),
+        (COUPON_10,  '10만원쿠폰'),
+        (COUPON_100, '100만원쿠폰'),
+        (COUPON_HALF,'평생반값쿠폰'),
+    )
+
+    name        = models.CharField(max_length=30, choices=COUPON_CHOICES, default=COUPON_NEW, blank=True)
     price       = models.DecimalField(max_digits=8, decimal_places=2)
 
     def __str__(self):

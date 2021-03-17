@@ -1,80 +1,168 @@
 import json
-import re
+import uuid
+from json               import JSONDecodeError
+from datetime           import datetime, timedelta
 
-from django.http    import JsonResponse
-from django.views   import View
+from django.db          import transaction
+from django.db.models   import Q
+from django.http        import JsonResponse
+from django.views       import View
+from django.utils       import timezone
 
-from order.models   import (
+from order.models       import (
                             Order,
-                            OrderItem,
+                            Cart,
                             OrderStatus,
                             )
-from user.models    import User, Address
-from product.models import Product
-from decorators.utils     import login_required
+from user.models        import User, Address
+from product.models     import Product
+from decorators.utils   import login_required
+from order.order_list   import get_order_list
 
-class OrderItemView(View):
+
+class CartView(View):
     @login_required
-    def get(self.request):
+    def get(self,request):
         try:
-            order_items = request.user.order_item.prefetch_related('product')
+            user = request.user
+            carts = Order.objects.select_related('cart').prefetch_related('product', 'cart', 'user').get(user=user, status__name='장바구니')
 
-        order_item_list = [{
-            'category'      : i.product.category.name,
-            'product_name'  : i.product.name,
-            'image'         : i.product.main_image,
-            'price'         : i.product.price ,
-            'quantity'      : quantity,
-            'create_at'     : i.product.creat_at,
-        } for i in order_item_list ]
+            result = [{
+                    'cartId'    : cart.id,
+                    'productId' : cart.product_id,
+                    'product'   : cart.product.name,
+                    'option'    : cart.option,
+                    'quantity'  : cart.quantity,
+                    'totalPrice': int(cart.total_price),
+                    'eachPrice' : cart.product.price,
+                    'urlImage'  : cart.product.image_url,
+                }for cart in carts]
 
-        return JsonResponse({'MESSAGE':'ORDER ITEM LIST': order_item_list}, status=200)
+            return JsonResponse({'MESSAGE':'SUCCESS', 'result':result}, status=200)
+        except Order.DoesNotExist as err:
+            return JsonResponse({'message': err}, status=400)
 
     @login_required
     def post(self, request):
-        data         = json.loads(request.body)
-        product = Product.objects.get(id=data['product_id'])
+        try:
+            data    = json.loads(request.body)
+            order_status = OrderStatus.objects.get(name='장바구니')
+
+            if not Order.objects.filter(user=request.user, status=order_status).exists():
+                with transaction.atomic():
+                    order = Order.objects.create(
+                        user         = request.user,
+                        status       = order_status,
+                        serial_number=str(uuid.uuid4())
+                        ) # 매번 유니크한 값 생성
+                    
+
+                    Cart.objects.create(
+                        order       = order,
+                        product_id  = data['productId'],
+                        quantity    = data['quantity'],
+                        total_price = int(data['totalPrice']),
+                        )
+                return JsonResponse({'message':'SUCCESS'},status=200)
+            
+            order = Order.objects.prefetch_related('product').\
+                                  get(user_id=request.user.id, status=order_status)
+            if not Cart.objects.get(user=request.user, status=order_status).exists():
+                Cart.objects.create(
+                    order       =order,
+                    product_id  =data['productId'],
+                    quantity    = data['quantity'],
+                    total_price = int(data['totalPrice']),
+                )
+                return JsonResponse({'message':'SUCCESS'}, status=200)
+        except JSONDecodeError               as e : error=e
+        except KeyError                      as e : error=e
+        except Product.DoesNotExist          as e : error=e
+        except Order.DoesNotExist            as e : error=e
+        except Order.MultipleObjectsReturned as e : error=e
+        except IntegrityError                as e : error=e
+        finally : 
+            return JsonResponse({'message':error}, status=400)
+
+    @login_required
+    def delete(self, request):
+        try :
+            cart_list = request.GET.getlist('cartId') # reference http://yong27.biohackers.net/303
+            cart_ids  = [int(single_cart_id) for single_cart_id in cart_list]
+            cart      = Cart.objects.filter(id__in=cart_ids)
+
+            if cart.exists():
+                cart.delete()
+                return JsonResponse({'message':'SUCCESS'}, status=200)
+            return JsonResponse({'message':'CART DOES NOT EXIST'},status=400)                    
+        
+        except KeyError:
+            return JsonResponse({"MESSAGE" : 'KEY_ERROR'}, status = 400)
+
+class PaymentView(View):
+    @login_required
+    def get(self, request):
+        try:
+            orders= Order.objects.prefetch_related('product__cart_set').\
+                                filter(user=request.user, status__name='장바구니')
+
+            product =[{
+                "cartId"        : cart_list.id,
+                "productId"     : cart_list.product_id,
+                "product"       : cart_list.product.name,
+                "option"        : cart_list.option,
+                "quantity"      : cart_list.quantity,
+                "totalPrice"    : cart_list.total_price,
+                "eachPrice"     : cart_list.product.price,
+                "urlImage"      : cart_list.product.image_url,
+            } for cart_list in order.cart_set.all() ]
+
+            sender  = {
+                'name'          : request.user.name,
+                'address'       : request.home_address,
+                'homeNumber'    : request.home_phone,
+                'MobileNumber'  : request.cell_phone,
+                'email'         : request.user.email,
+            }
+
+            receipient = {
+                'receipient'    : request.user.name,
+                'address'       : request.home_address,
+                'homeNumber'    : request.home_phone,
+                'MobileNumber'  : request.cell_phone,
+            }
+            return JsonResponse({
+                'message':'SUCCESS',
+                'results':{
+                    'product_info'  : product,
+                    'sender'        : sender,
+                    'receipient'    : receipient,
+                }}, status=200)
+        except Order.DoesNotExist            as error : 
+            return JsonResponse({'message':error}, status=400)
+
+
+class OrderListView(View):
+    @login_required
+    def get(self, request):
+        result = get_order_list(request)
+        return JsonResponse({'message':'SUCCESS', 'data':result}, status=200)
+
+    @login_required
+    def patch(self, request):
+        CONFIRM_STATUS = 4
+
+        data = json.loads(request.body)
 
         try:
-            order_item = OrderItem.objects.get(product__id=data['product_id'], user__id=request.user.id)
-            if order_item:
-                if order_item.product.name == data['product_name']:
-                    order_item.quantity += int(data['quantity'])
-                    order_item.save()
-        except OrderItem.DoesNotExist:
-            user       = User.objects.get(id=request.user.id) 
-            order_item = OrderItem(
-                user    =user,
-                product =data['product_id'],
-                quantity=int(data['quantity']),
-            )
-            order_item.save()
+            cart = Cart.objects.get(order_id=data['orderId'], product_id=data['productId'])
+            cart.status_id = CONFIRM_STATUS
+            cart.save()
 
-        except Product.DoesNotExist:
-            return JsonResponse({'MESSAGE':data['product_id']+'DOES NOT EXIST'}, status=400)
-        except KeyError:
-            return JsonResponse({'MESSAGE':'KEY ERROR OCCURED'}, status=400)
-        except ValueError:
-            return JsonResponse({'MESSAGE':'VALUE ERROR OCCURED'}, status=400)
+            result = get_order_list(request)
 
-        @login_required
-        def put(self,request): # 
-            data = json.loads(request.body)
-            order_item = OrderItem.objects.get(user = request.user, id=data['order_item'])
-            order_item.quantity = data['order_item_num']
-            return JsonResponse({'MESSAGE':})
-        except:
-            return JsonResponse({'MESSAGE':},)
-
-        @login_required
-            def delete(self, request):
-                try :
-                    data = json.loads(request.body)
-                    order_item = OrderItem.objects.get(id=data['order_item_num'])  
-                    cart.delete()
-                    return JsonResponse({'MESSAGE':'DELETEED ORDER ITEM SUCCESSFULLY'}, status=200)
-                    
-                except OrderItem.DoesNotExist :
-                    return JsonResponse({"MESSAGE" :"ORDER ITEM DOES NOT EXISTS"}, status = 400)   
-                except KeyError:
-                    return JsonResponse({"MESSAGE" : 'KEY_ERROR'}, status = 400)
+            return JsonResponse({'message':'SUCCESS', 'data': result}, status=200)
+        except KeyError          as e: error=e 
+        except Cart.DoesNotExist as e: error=e 
+        finally:
+            return JsonResponse({'message':error}, status=400) 
