@@ -14,7 +14,7 @@ https://youtu.be/AaUEtWd0aq4
 
 ## **🏠** 프로젝트 참가자 (Front & Back)
 
-![스크린샷 2020-12-27 12 21 59](https://user-images.githubusercontent.com/71719160/103166205-1bc83580-4863-11eb-99f7-0546712ea68b.png)
+![스크린샷 2020-12-27 12 21 59](https://trello-attachments.s3.amazonaws.com/5ffe5e702f034315a5e6adf3/1200x900/665cdf15fa44ec7da763297ff8936a9b/20210113_122134_306.jpg)
 
 ### 👍 **FrontEnd**
 
@@ -22,7 +22,7 @@ https://youtu.be/AaUEtWd0aq4
 
 ### 👍 **BackEnd**
 
-- 이혜성
+- 이혜성, 
 
 ## **🌹기술 스택🌹**
 
