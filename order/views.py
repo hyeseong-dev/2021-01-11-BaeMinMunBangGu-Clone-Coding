@@ -1,107 +1,80 @@
-# import json
-# import re
+import json
+import re
 
-# from django.http    import JsonResponse
-# from django.views   import View
+from django.http    import JsonResponse
+from django.views   import View
 
-# from order.models   import (
-#                             Order,
-#                             OrderItem,
-#                             OrderStatus,
-#                             )
-# from user.models    import User, Address
-# from product.models import Product
-# from decorators.utils     import login_required
+from order.models   import (
+                            Order,
+                            OrderItem,
+                            OrderStatus,
+                            )
+from user.models    import User, Address
+from product.models import Product
+from decorators.utils     import login_required
 
-# class OrderItemView(View):
-#     @login_required
-#     def get(self, request):
-#         try:
-#             data = json.loads(request.body)
-#             address = data['address']
-#             address = data['address']
-#             user = User.objects.filter(id=request.user.id)[0]
+class OrderItemView(View):
+    @login_required
+    def get(self.request):
+        try:
+            order_items = request.user.order_item.prefetch_related('product')
 
-#             if Address.objects.filter(user=user.id).filter(default=True).exists():
-#                 address = Address.objects.filter(user=user.id).filter(default=True)
-#             return address.get('address')
+        order_item_list = [{
+            'category'      : i.product.category.name,
+            'product_name'  : i.product.name,
+            'image'         : i.product.main_image,
+            'price'         : i.product.price ,
+            'quantity'      : quantity,
+            'create_at'     : i.product.creat_at,
+        } for i in order_item_list ]
 
-#             Order.objects.create(
-#                 user    = request.user,
-#                 address = address,
-#                 point   = da
-#             )
-#     pass
+        return JsonResponse({'MESSAGE':'ORDER ITEM LIST': order_item_list}, status=200)
 
-#     @login_required
-#     def post(self, request):
-#         try:
-#             data         = json.loads(request.body)
-#             user         = Order.objects.filter(user=request.user) 
-#             ORDER_STATUS = {
-#                     1   :'입금대기',
-#                     2   :'결제완료',
-#                     3   :'상품준비중',
-#                     4   :'배송중',
-#                     5   :'배송완료',
-#                     6   :'구매확정',
-#             }
+    @login_required
+    def post(self, request):
+        data         = json.loads(request.body)
+        product = Product.objects.get(id=data['product_id'])
 
-#             # I. Order 존재(O) 
-#             #  1) 오더가 존재하고 이미 상품이 존재하는 카트 - 기존 OrderItem 업데이트(수량!)
-#             #  2) 오더가 존재하고 상품이 새로 추가되는 경우 - OrderItem 생성(새로운 상품)          
-            
-#             # II.  Order 존재(X)
-#             #  1) 오더를 생성 -> OrderItem 생성.
-            
-#             if Order.objects.filter(user=request.user).exists(): # Order(O) 
-#                 if OrderItem.objects.filter(id=data['order_item_id']).exists(): # 이미 상품 존재
-#                     order_item = OrderItem.objects.filter(id=data['order_item_id'])
-#                     order_item.quantity += int(data['quantity']
-#                     order_item.save()
-#                 else: # 새로운 OrderItem 생성
-#                     order_item = Order(
-#                                         address     = data['address']
-#                                         product_id  = data['product_id']
-#                                         order       = 
-#                                         total_price = 
-#                                         thumbnail   = 
-#                                         quantity    = 
-#                     )
-#                     order_item.save()
+        try:
+            order_item = OrderItem.objects.get(product__id=data['product_id'], user__id=request.user.id)
+            if order_item:
+                if order_item.product.name == data['product_name']:
+                    order_item.quantity += int(data['quantity'])
+                    order_item.save()
+        except OrderItem.DoesNotExist:
+            user       = User.objects.get(id=request.user.id) 
+            order_item = OrderItem(
+                user    =user,
+                product =data['product_id'],
+                quantity=int(data['quantity']),
+            )
+            order_item.save()
 
+        except Product.DoesNotExist:
+            return JsonResponse({'MESSAGE':data['product_id']+'DOES NOT EXIST'}, status=400)
+        except KeyError:
+            return JsonResponse({'MESSAGE':'KEY ERROR OCCURED'}, status=400)
+        except ValueError:
+            return JsonResponse({'MESSAGE':'VALUE ERROR OCCURED'}, status=400)
 
+        @login_required
+        def put(self,request): # 
+            data = json.loads(request.body)
+            order_item = OrderItem.objects.get(user = request.user, id=data['order_item'])
+            order_item.quantity = data['order_item_num']
+            return JsonResponse({'MESSAGE':})
+        except:
+            return JsonResponse({'MESSAGE':},)
 
-#             else:
-#                 # Order.objects.create(
-#                 #     user        = 
-#                 # )
-
-#             # except Order.DoesNotExist:
-#             #     return None
-
-#             if OrderItem.objects.filter(user=user):
-#                 OrderItem.objects.create(
-#                 user        = user,
-#                 address     = user.address,
-#                 product     = data['product_id'],
-#                 quantity   += int(data['quantity']),
-#                 thumbnail   = product.thumbnail,
-#                 total_price = product.price,
-#                 )
-#             # return OrderItem.object.create(
-
-#             # )
-
-#             # return Cart(
-#             #         quantity = data.get('quantity',)
-#             #     )
-            
-        
-#         except Product.DoesNotExist:
-#             return JsonResponse({'MESSAGE': 'PRODUCT DOES NOT EXIST'}, status=400)
-#         except User.DoesNotExist:
-#             return JsonResponse({'MESSAGE': 'USER DOES NOT EXIST'}, status=400)
-#         except KeyError:
-#             return JsonResponse({'MESSAGE': 'KEY ERROR'}, status=400)
-    
+        @login_required
+            def delete(self, request):
+                try :
+                    data = json.loads(request.body)
+                    order_item = OrderItem.objects.get(id=data['order_item_num'])  
+                    cart.delete()
+                    return JsonResponse({'MESSAGE':'DELETEED ORDER ITEM SUCCESSFULLY'}, status=200)
+                    
+                except OrderItem.DoesNotExist :
+                    return JsonResponse({"MESSAGE" :"ORDER ITEM DOES NOT EXISTS"}, status = 400)   
+                except KeyError:
+                    return JsonResponse({"MESSAGE" : 'KEY_ERROR'}, status = 400)
