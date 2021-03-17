@@ -1,7 +1,7 @@
 # 배민문방구 클론 코딩 API 🚄
 
 - 진행기간: 2021년 01월 11일(월) ~ 2021년 01월 22일(금) [12주간]
-<img width="933" alt="Screen Shot 2020-12-24 at 5 49 39 PM" src="https://user-images.githubusercontent.com/71719160/103166192-f509ff00-4862-11eb-8038-688e78bbf4f8.png">
+<img width="933" alt="Screen Shot 2020-12-24 at 5 49 39 PM" src="https://media.vlpt.us/images/hyeseong-dev/post/6291b043-39ed-4036-b603-ab9865b4f34f/image.png">
 
 ## **🏠프로젝트 소개**
 
@@ -10,7 +10,7 @@
 
 ## **🏠**프로젝트 시연영상
 
-[https://www.youtube.com/watch?v=cCLuBCNrrnA&t=25s](https://www.youtube.com/watch?v=cCLuBCNrrnA&t=25s)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/AaUEtWd0aq4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## **🏠** 프로젝트 참가자 (Front & Back)
 
