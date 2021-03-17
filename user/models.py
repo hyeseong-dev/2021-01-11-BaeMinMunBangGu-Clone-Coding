@@ -88,7 +88,7 @@ class Address(models.Model):
         db_table = 'addresses'
 
 
-class RecentlyView(models.Model):
+class RecentView(models.Model):
     user        = models.ForeignKey('User', on_delete=models.CASCADE)
     product     = models.ForeignKey('product.Product', on_delete=models.CASCADE)
     create_at   = models.DateTimeField(auto_now_add=True)
