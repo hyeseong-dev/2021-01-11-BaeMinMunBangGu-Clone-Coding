@@ -117,7 +117,7 @@ class CategoryView(View):
             'new'       : True if product.create_at > timezone.now()-timedelta(days=30) else False,
             'best'      : sorts.is_best(best_items, product.id),
             'sale'      : bool(product.sale)
-        } for product in products.order_by('-total_sales', SORT_TYPES['ordering']) ]
+        } for product in products.order_by('-total_sales', SORT_TYPES[ordering]) ]
         return JsonResponse({'RESULT':results,'SORTING':SORTINGS, 'PRODUCT COUNT':products.count()}, status=200, safe=True)
 
 
